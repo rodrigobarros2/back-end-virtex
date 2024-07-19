@@ -1,0 +1,20 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model OltOutput {
+    id String @id @default(uuid())
+
+    slot   String
+    port   String
+    ont_id String
+    sn     String
+    state  String
+
+    createdAt DateTime @default(now())
+}
