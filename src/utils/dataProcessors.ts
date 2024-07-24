@@ -1,5 +1,14 @@
-export function parseHuawei(txt) {
-    let lines = txt.split("\n");
+interface OntInfo {
+    slot: string;
+    port: string;
+    ont_id: string;
+    state: string;
+    sn: string;
+    olt_type: string;
+}
+
+export function parseHuawei(input: string) {
+    let lines = input.split("\n");
     let data = [];
     let inDataSection = false;
 
@@ -35,8 +44,8 @@ export function parseHuawei(txt) {
     return data;
 }
 
-export function parseOntInfoZTESNs(txt: string) {
-    const lines = txt.split("\n");
+export function parseOntInfoZTESNs(input: string) {
+    const lines = input.split("\n");
     const data = [];
 
     for (let i = 2; i < lines.length; i++) {
@@ -108,7 +117,7 @@ export function parseOntInfoZTESNsState(input: string) {
     return data;
 }
 
-export const combineZTEData = (stateData, snData) => {
+export const combineZTEData = (stateData: OntInfo[], snData: OntInfo[]) => {
     const combinedData = stateData.map((stateItem) => {
         const snItem = snData.find(
             (snItem) =>
