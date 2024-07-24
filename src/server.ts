@@ -6,7 +6,7 @@ import {
     parseHuawei,
     parseOntInfoZTESNs,
     parseOntInfoZTESNsState,
-} from "./dataProcessors";
+} from "./utils/dataProcessors";
 
 const multer = require("multer");
 
@@ -26,7 +26,7 @@ app.post(
         { name: "zteSnFile", maxCount: 1 },
         { name: "zteStateFile", maxCount: 1 },
     ]),
-    async (req: Request, res: Response) => {
+    async (req: any, res: Response) => {
         try {
             const huaweiFile = req.files["huaweiFile"]
                 ? req.files["huaweiFile"][0]
