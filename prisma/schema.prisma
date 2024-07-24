@@ -8,13 +8,12 @@ datasource db {
 }
 
 model OltOutput {
-    id String @id @default(uuid())
+    id Int @id @default(autoincrement())
 
-    slot   String
-    port   String
-    ont_id String
-    sn     String
-    state  String
-
-    createdAt DateTime @default(now())
+    slot     String
+    port     String
+    ont_id   String
+    sn       String
+    state    String
+    olt_type String
 }
