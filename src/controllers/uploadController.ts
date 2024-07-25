@@ -24,9 +24,15 @@ export const uploadFiles = async (req: Request, res: Response) => {
   try {
     const files = req.files as UploadedFiles;
 
-    const singleCommandOutput = files["singleCommandOutput"]? files["singleCommandOutput"][0] : null;
-    const outputOfTwoCommandsIdOne = files["outputOfTwoCommandsIdOne"]? files["outputOfTwoCommandsIdOne"][0] : null;
-    const outputOfTwoCommandsIdTwo = files["outputOfTwoCommandsIdTwo"]? files["outputOfTwoCommandsIdTwo"][0] : null;
+    const singleCommandOutput = files["singleCommandOutput"]
+      ? files["singleCommandOutput"][0]
+      : null;
+    const outputOfTwoCommandsIdOne = files["outputOfTwoCommandsIdOne"]
+      ? files["outputOfTwoCommandsIdOne"][0]
+      : null;
+    const outputOfTwoCommandsIdTwo = files["outputOfTwoCommandsIdTwo"]
+      ? files["outputOfTwoCommandsIdTwo"][0]
+      : null;
 
     if (singleCommandOutput) {
       // aqui criaria outros if, para cada marca de OLT diferente
