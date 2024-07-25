@@ -6,13 +6,13 @@ import upload from "../middlewares/multerMiddleware";
 const router = express.Router();
 
 router.post(
-    "/upload-olt",
-    upload.fields([
-        { name: "singleCommandOutput", maxCount: 1 },
-        { name: "outputOfTwoCommandsIdOne", maxCount: 1 },
-        { name: "outputOfTwoCommandsIdTwo", maxCount: 1 },
-    ]),
-    uploadFiles
+  "/upload-olt",
+  upload.fields([
+    { name: "singleCommandOutput", maxCount: 1 },
+    { name: "outputOfTwoCommandsIdOne", maxCount: 1 },
+    { name: "outputOfTwoCommandsIdTwo", maxCount: 1 },
+  ]),
+  uploadFiles
 );
 
 router.post("/info-olt", createInfoOlt);
