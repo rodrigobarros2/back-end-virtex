@@ -35,7 +35,6 @@ export const createInfoOlt = async (req: Request, res: Response) => {
 };
 
 export const getInfoOlt = async (req: Request, res: Response) => {
-    console.log("🚀 ~ getInfoOlt ~ req:", req);
     try {
         const data = await prisma.oltOutput.findMany();
         res.json(data);

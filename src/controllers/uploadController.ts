@@ -7,50 +7,60 @@ import { combineZTEData } from "../utils/combineZTEData";
 
 const prisma = new PrismaClient();
 
-export const uploadFiles = async (req: any, res: Response) => {
-    try {
-        const huaweiFile = req.files["huaweiFile"]
-            ? req.files["huaweiFile"][0]
-            : null;
-        const zteSnFile = req.files["zteSnFile"]
-            ? req.files["zteSnFile"][0]
-            : null;
-        const zteStateFile = req.files["zteStateFile"]
-            ? req.files["zteStateFile"][0]
-            : null;
+interface UploadedFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  buffer: Buffer;
+  size: number;
+}
 
-        if (huaweiFile) {
-            const huaweiData = huaweiFile.buffer.toString("utf-8");
-            const huaweiParsed = parseHuawei(huaweiData);
-            await prisma.oltOutput.createMany({ data: huaweiParsed });
-        }
+interface UploadedFiles {
+  [fieldname: string]: UploadedFile[];
+}
 
-        if (zteSnFile && zteStateFile) {
-            const ontInfoZTESNs = zteSnFile.buffer.toString("utf-8");
-            const zteState = zteStateFile.buffer.toString("utf-8");
+export const uploadFiles = async (req: Request, res: Response) => {
+  try {
+    const files = req.files as UploadedFiles;
 
-            if (zteSnFile.originalname === "OntInfo - ZTE - SNs.txt") {
-                const zteStateParsed = parseOntInfoZTESNsState(zteState);
-                const ontInfoZTESNsParsed = parseOntInfoZTESNs(ontInfoZTESNs);
-                const combinedData = combineZTEData(
-                    zteStateParsed,
-                    ontInfoZTESNsParsed
-                );
-                await prisma.oltOutput.createMany({ data: combinedData });
-            } else {
-                const zteStateParsed = parseOntInfoZTESNsState(ontInfoZTESNs);
-                const ontInfoZTESNsParsed = parseOntInfoZTESNs(zteState);
-                const combinedData = combineZTEData(
-                    zteStateParsed,
-                    ontInfoZTESNsParsed
-                );
-                await prisma.oltOutput.createMany({ data: combinedData });
-            }
-        }
+    const singleCommandOutput = files["singleCommandOutput"]? files["singleCommandOutput"][0] : null;
+    const outputOfTwoCommandsIdOne = files["outputOfTwoCommandsIdOne"]? files["outputOfTwoCommandsIdOne"][0] : null;
+    const outputOfTwoCommandsIdTwo = files["outputOfTwoCommandsIdTwo"]? files["outputOfTwoCommandsIdTwo"][0] : null;
 
-        res.status(200).send("Files processed and data inserted successfully");
-    } catch (error) {
-        console.error("Error processing files", error);
-        res.status(500).send("Error processing files");
+    if (singleCommandOutput) {
+      // aqui criaria outros if, para cada marca de OLT diferente
+      if (singleCommandOutput.originalname === "OntInfo - Huawei.txt") {
+        const huaweiData = singleCommandOutput.buffer.toString("utf-8");
+        const huaweiParsed = parseHuawei(huaweiData);
+        await prisma.oltOutput.createMany({ data: huaweiParsed });
+      }
     }
+
+    if (outputOfTwoCommandsIdOne && outputOfTwoCommandsIdTwo) {
+      const ontInfoZTESNs = outputOfTwoCommandsIdOne.buffer.toString("utf-8");
+      const zteState = outputOfTwoCommandsIdTwo.buffer.toString("utf-8");
+
+      //traz a liberdade de escolher entre qualquer input de duas sáidas no front-end
+      const [firstParsed, secondParsed] =
+        outputOfTwoCommandsIdOne.originalname === "OntInfo - ZTE - SNs.txt"
+          ? [
+              parseOntInfoZTESNsState(zteState),
+              parseOntInfoZTESNs(ontInfoZTESNs),
+            ]
+          : [
+              parseOntInfoZTESNsState(ontInfoZTESNs),
+              parseOntInfoZTESNs(zteState),
+            ];
+
+      const combinedData = combineZTEData(firstParsed, secondParsed);
+
+      await prisma.oltOutput.createMany({ data: combinedData });
+    }
+
+    res.status(200).send("Files processed and data inserted successfully");
+  } catch (error) {
+    console.error("Error processing files", error);
+    res.status(500).send("Error processing files");
+  }
 };

@@ -8,9 +8,9 @@ const router = express.Router();
 router.post(
     "/upload-olt",
     upload.fields([
-        { name: "huaweiFile", maxCount: 1 },
-        { name: "zteSnFile", maxCount: 1 },
-        { name: "zteStateFile", maxCount: 1 },
+        { name: "singleCommandOutput", maxCount: 1 },
+        { name: "outputOfTwoCommandsIdOne", maxCount: 1 },
+        { name: "outputOfTwoCommandsIdTwo", maxCount: 1 },
     ]),
     uploadFiles
 );
