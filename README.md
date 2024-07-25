@@ -1,5 +1,3 @@
-Caso queiram rodar localmente, basta seguir os seguintes passos
-
 ## Rodando localmente
 
 
